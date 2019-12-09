@@ -3,10 +3,17 @@ const Schema = mongoose.Schema // Pull the Schema off of mongoose
 
 // Creating the Book schema from Schema
 // Notice the required
+// NB the mongoose.Schema.Types.ObjectId is a special 'data type'
+// It looks at the next ref key to know which collection to reference
+
 const BookSchema = new Schema({
   name: {
     type: String,
     required: true
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'author'
   }
 })
 

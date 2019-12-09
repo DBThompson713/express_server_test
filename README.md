@@ -154,8 +154,8 @@ async function show(req, res) {
     - Forgot to export the functions
     - Having a plural or not having a plural where there should be one
 
-# Step - 4
-### Normalizing and Denormalizing
+# Step - 5
+### Books Books Books
 
 - This is the main part of the lesson! 
 - We Are going to create a Brand new resourse. 
@@ -165,7 +165,65 @@ async function show(req, res) {
     - Book Model
     - Book Schema
     - Book Views
-- I would suggest copy pasting the above files and making edits where you see fit
+- I would suggest copy pasting the above files and making edits where you see fit. 
 
 - Possible errors for this step
     - Forgetting any of the above or not changing a copied file from Author to Book
+
+# Step - 6
+### Normalizing & Denormalizing
+- intro
+    - Mongo is a noSQL db. Therefore we do not have relationships
+    - However we can fake it with normalizing
+    - Normalizing can be throught of referencing other document object ids directly into another document
+    - In otherwords we reference it. It is very similar to a foreign key from postgres
+    - The **big** difference is that in SQL dbs using a foreign key, it makes 1 query
+    - However in Mongo it has to make 2. So we want to use it sparingly.
+    - We have to make the DB design decision based on our requirements and how we want to query our data. 
+    - For the use of our current app we are only ever going to whow the author of the book when we click on the book. Ie only in the book show.
+- Save the author of a book on the book schema.
+    - NB the mongoose.Schema.Types.ObjectId is a special 'data type'
+    - It looks at the next ref key to know which collection to reference
+    ```
+    const BookSchema = new Schema({
+    name: {
+    type: String,
+    required: true
+    },
+    author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'author'
+        }
+    })
+    ```
+- Now we need to address the book controllers to save an author
+    ```
+        async function create (req, res) {
+        let { name, author } = req.body // Destructuring off the name, author from the req.body
+        let book = await BookModel.create({ name, author }) // Creating the book
+        .catch(err => res.status(500).send(err))
+        res.redirect('/books') // Redirect to /books
+        }
+    ```
+- Add in an input box on the book/new.handlebars
+```
+    <h1>New Book</h1>
+
+    <form method="post" action="/books">
+        <div>
+            <label>Name</label>
+        </div>
+        <div>
+            <input type="text" name="name" />
+        </div>
+        <div>
+            <label>Author</label>
+        </div>
+        <div>
+            <input type="text" name="author" />
+        </div>
+        <div>
+            <input type="submit" value="Submit Form" />
+        </div>
+    </form>
+```

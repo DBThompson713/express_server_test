@@ -1,9 +1,10 @@
 const BookModel = require('../database/models/book_model')
+const AuthorModel = require('../database/models/author_model')
 
 // Logic for creating a resource
 async function create (req, res) {
-  let { name } = req.body // Destructuring off the name, bio and gender from the req.body
-  let book = await BookModel.create({ name }) // Creating the book
+  let { name, author } = req.body // Destructuring off the name, author from the req.body
+  let book = await BookModel.create({ name, author }) // Creating the book
     .catch(err => res.status(500).send(err))
   res.redirect('/books') // Redirect to /books
 }
@@ -15,15 +16,17 @@ async function index (req, res) {
 }
 
 // Shows the form to create the resource
-function make (req, res) {
-  res.render('book/new')
+async function make (req, res) {
+  let authors = await AuthorModel.find().select('_id name')
+  res.render('book/new', { authors })
 }
 
 // The logic for the Show controller
 async function show (req, res) {
   //   console.log(req.params)
   let { id } = req.params // Destructure the id off the params.
-  let book = await BookModel.findById(id) // Find the book by id and add save it to the variable book
+  let book = await BookModel.findById(id).populate('author') // It knows that since there is an author id and its a ref. The program knows to populate the 'author'
+  console.log(book)
   res.render('book/show', { book }) // render the 'book/show' and pass it the {book}
 }
 
