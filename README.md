@@ -153,3 +153,19 @@ async function show(req, res) {
     - Forgot the '( )' at the end of `const router = express.Router()`
     - Forgot to export the functions
     - Having a plural or not having a plural where there should be one
+
+# Step - 4
+### Normalizing and Denormalizing
+
+- This is the main part of the lesson! 
+- We Are going to create a Brand new resourse. 
+- To do this we are going to need:
+    - Book Routes
+    - Book Controllers
+    - Book Model
+    - Book Schema
+    - Book Views
+- I would suggest copy pasting the above files and making edits where you see fit
+
+- Possible errors for this step
+    - Forgetting any of the above or not changing a copied file from Author to Book

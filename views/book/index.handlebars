@@ -1,0 +1,20 @@
+<h1>Books</h1>
+
+<a href="/books/new">Create New Book</a>
+
+{{!-- The 'this' in this context refers to the specific Book being handled at the time in the loop --}}
+
+
+{{#each books}}
+<div>
+    <p>Name: {{ this.name }}</p>
+</div>
+
+<a href="/books/{{this._id}}">View Book</a>
+{{!-- notice the "?_method=DELETE" this must be added to use a delete verb --}}
+{{!-- Its a query param which is given 'method=DELETE' --}}
+<a href="/books/{{this._id}}?_method=DELETE">Delete Book</a>
+<a href="/books/{{this._id}}/edit">Edit Book</a>
+{{!-- This horizontal line is frowned upon --}}
+<hr />
+{{/each}}
