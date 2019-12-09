@@ -171,7 +171,7 @@ async function show(req, res) {
     - Forgetting any of the above or not changing a copied file from Author to Book
 
 # Step - 6
-### Normalizing & Denormalizing
+### Normalizing
 - intro
     - Mongo is a noSQL db. Therefore we do not have relationships
     - However we can fake it with normalizing
@@ -198,32 +198,54 @@ async function show(req, res) {
     ```
 - Now we need to address the book controllers to save an author
     ```
-        async function create (req, res) {
-        let { name, author } = req.body // Destructuring off the name, author from the req.body
-        let book = await BookModel.create({ name, author }) // Creating the book
-        .catch(err => res.status(500).send(err))
-        res.redirect('/books') // Redirect to /books
-        }
+    async function create(req, res) {
+    let { title, published, author } = req.body;
+    let book = await BookModel.create({ title, published, author }).catch(err =>
+    res.status(500).send(err)
+    );
+    res.redirect(`/books/${book._id}`);
+    }
+    ```
+
+    ```
+    async function make(req, res) {
+    let authors = await AuthorModel.find().select("_id name");
+    res.render("book/new", { authors });
+    }
+    ```
+
+    ```
+    async function show(req, res) {
+    let { id } = req.params;
+    let book = await BookModel.findById(id).populate("author");
+    res.render("book/show", { book });
+    }
     ```
 - Add in an input box on the book/new.handlebars
 ```
     <h1>New Book</h1>
 
     <form method="post" action="/books">
-        <div>
-            <label>Name</label>
-        </div>
-        <div>
-            <input type="text" name="name" />
-        </div>
-        <div>
-            <label>Author</label>
-        </div>
-        <div>
-            <input type="text" name="author" />
-        </div>
-        <div>
-            <input type="submit" value="Submit Form" />
-        </div>
+    <div>
+        <label>Name</label>
+    </div>
+    <div>
+        <input type="text" name="name" />
+    </div>
+    <div>
+        <label>Author</label>
+    </div>
+    <div>
+        <select name="author">
+
+            <option value=""></option>
+
+        </select>
+    </div>
+    <div>
+        <input type="submit" value="Submit Form" />
+    </div>
     </form>
 ```
+- Now When we are looking at the show page of the book. The db makes two requests. This is acceptabe. 
+- However if we were to display the author name on the index page then the db will make 1 query for all the books and 1 more for every book author. Which could be 1000s! (Dont do this)

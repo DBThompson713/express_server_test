@@ -6,7 +6,7 @@ async function create (req, res) {
   let { name, author } = req.body // Destructuring off the name, author from the req.body
   let book = await BookModel.create({ name, author }) // Creating the book
     .catch(err => res.status(500).send(err))
-  res.redirect('/books') // Redirect to /books
+  res.redirect(`/books/${book._id}`) // Redirect to /books/ID
 }
 
 // Showed a list of all the resources
